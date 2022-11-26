@@ -4,7 +4,13 @@ import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom"
 
 
 export default function WelcomePage(props) {
-    const {stateCodes, setSelections, selections, handleSubmit, count, setCount} = useContext(WelcomeContext)
+    const {
+        stateCodes, 
+        setSelections, 
+        selections, 
+        handleSubmit, 
+        count, 
+        setCount} = useContext(WelcomeContext)
     
     const stateCodeHtml = stateCodes.map((state, index) => {
         return (

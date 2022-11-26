@@ -9,6 +9,7 @@ function DisplayPage(props) {
         collection,
         selections,
         setVideo}= useContext(WelcomeContext)
+    
     function handleVideoSelection(event) {
         console.log(event.target.id)
         setVideo(event)
