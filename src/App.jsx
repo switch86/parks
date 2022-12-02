@@ -1,24 +1,27 @@
 import {React, useState} from 'react';
+import {BrowserRouter as Router, Routes, Route, Link} from "react-router-dom"
+import { WelcomeContext , WelcomeContextProvider} from './components/WelcomeContext';
+import Menu from "./components/Menu"
 import DisplayPage from './components/DisplayPage';
 import WelcomePage from "./components/WelcomePage"
-import LiveStreams from './components/LiveStreams';
-import Menu from "./components/Menu"
-// eslint-disable-next-line
-import { WelcomeContext , WelcomeContextProvider} from './components/WelcomeContext';
+import Video from "./components/Video"
 import './App.css';
 
-
 function App(props) {
-  // const [display, setDisplay] = useState(false)
-  // function handleClick() {
-  //   setDisplay(prev => !prev)
-  // }
+
   return (
+    <Router>
         <WelcomeContextProvider>
-            <Menu />
-            {/* <DisplayPage />
-            <WelcomePage />   */}
+          <Menu />
+          <Routes>
+            <Route path="/" element={<WelcomePage />}></Route>
+            <Route path="/videos" element={<DisplayPage />}></Route>
+            <Route path="/videos/:videoId" element={<Video />}></Route>
+            {/* <Route path="/lisvestreams" element={<LiveStreams />}></Route> */}
+          </Routes>
         </WelcomeContextProvider>
+    </Router>
+        
   )
 }
 

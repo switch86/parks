@@ -8,6 +8,7 @@ const WelcomeContext = createContext()
 function WelcomeContextProvider(props) {
   // set the array of US states
   const stateCodes = [
+    {name: 'All', abbreviation: ""},
    { name: 'ALABAMA', abbreviation: 'AL'},
    { name: 'ALASKA', abbreviation: 'AK'},
    { name: 'AMERICAN SAMOA', abbreviation: 'AS'},
@@ -67,13 +68,13 @@ function WelcomeContextProvider(props) {
    { name: 'WEST VIRGINIA', abbreviation: 'WV'},
    { name: 'WISCONSIN', abbreviation: 'WI'},
    { name: 'WYOMING', abbreviation: 'WY' }
- ]
+  ]
   const [count, setCount] = useState(0)
- // set empty array as state for the imported data
+  // set empty array as state for the imported data
   const [collection, setCollection] = useState([])
   // set state for user set parameters for the api request 
   const [selections, setSelections] = useState({
-    stateCode: "statecode=AL&",
+    stateCode: "",
     isPreRecorded: true,
     search: ""
   })
@@ -81,8 +82,11 @@ function WelcomeContextProvider(props) {
   const [videoSelection, setVideoSelection] = useState()
   const [display, setDisplay] = useState("main")
   
+  // set empty state for image carousel 
+  const [imageArray, setImageArray] = useState([])
+  
   useEffect(() => {
-    axios.get(`https://developer.nps.gov/api/v1/${selections.isPreRecorded ? "multimedia/videos" : "webcams"}?${selections.stateCode}${selections.search === "" ? "" : `q=${selections.search}&`}api_key=ch5ZJCcqmTafvaWiR3oUP2lf6vBHo2RfWxPzNoe3`)
+    axios.get(`https://developer.nps.gov/api/v1/${selections.isPreRecorded ? "multimedia/videos" : "webcams"}?${selections.stateCode === "" ? "" : selections.stateCode}${selections.search === "" ? "" : `q=${selections.search}&`}api_key=ch5ZJCcqmTafvaWiR3oUP2lf6vBHo2RfWxPzNoe3`)
       .then(res => {setCollection(res.data.data)})
       .catch(error => console.log(error))
   }, [count])
@@ -97,9 +101,22 @@ function WelcomeContextProvider(props) {
     console.log(video)
     setVideoSelection(video)
   }
+  let imagesArray =[]
+  function getImages() {
+    axios.get("https://developer.nps.gov/api/v1/parks?stateCode=ca&limit=10&api_key=ch5ZJCcqmTafvaWiR3oUP2lf6vBHo2RfWxPzNoe3")
+            // .then(res => setImageArray(res.data.data[0].images))
+            .then(res => setImageArray(res.data.data.map(image => image.images[0])))
+            .catch(err => console.log(err))
+  }  
+  
+  useEffect(() => {
+        getImages()
+
+      }, [collection])  
+
   console.log(collection) 
   console.log(selections)
-  
+  console.log(imageArray)
   
     return (
       <>
@@ -112,7 +129,9 @@ function WelcomeContextProvider(props) {
           setVideo: setVideo,
           handleSubmit: handleSubmit,
           setSelections: setSelections,
-          setDisplay: setDisplay
+          setDisplay: setDisplay,
+          imageArray:imageArray,
+          setCount:setCount
           // clickStream: clickStream
         }}>
           {props.children}
